@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ordenando dados</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+<div id="chart"></div>
+<script type="text/javascript">
+    function render(data, comparator) {
+        d3.select("#chart").selectAll("div.h-bar")
+                .data(data)
+            .enter().append("div")
+            .attr("class", "h-bar")
+            .append("span");
+        
+        d3.select("#chart").selectAll("div.h-bar")
+                .data(data)
+            .attr("class", "h-bar")
+            .style("width", function (d) {
+                return (d.Worldwide_Gross_M * 0.5) + "px";
+            })
+            .select("span")
+                .text(function (d) {
+                    return d.Film;
+                });
+         if(comparator)
+            d3.select("body")
+                .selectAll("div.h-bar") 
+                .sort(comparator);
+    }
+
+    let comparePorDespesa = function (a, b) { 
+        return a.Worldwide_Gross_M - b.Worldwide_Gross_M;
+    };
+    let comparePorCategoria = function (a, b) { 
+        return a.Film < b.Film?-1:1;
+    };
+    
+    d3.json("data/movies.json").then(function(json){ 
+        render(json, comparePorDespesa);
+    });
+</script>
+</body>
+</html>
